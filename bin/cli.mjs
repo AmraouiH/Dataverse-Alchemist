@@ -69,7 +69,7 @@ function init(targetArg) {
         if (!dryRun) { fs.copyFileSync(path.join(source, 'dataverse-alchemist', 'config', 'tickets.example.json'), ticketsPath); }
     }
 
-    const ignore = ['.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/'];
+    const ignore = ['.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/*.bak', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/'];
     const gitignore = path.join(target, '.gitignore');
     const existing = readLines(gitignore);
     const missing = ignore.filter((l) => !existing.includes(l));

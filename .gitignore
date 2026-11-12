@@ -1,6 +1,7 @@
 # Dataverse Alchemist: local data of a CRM project (copy into the .gitignore of projects that use it)
 **/.alchemist/runs/
 **/.alchemist/*.local.json
+**/.alchemist/*.bak
 **/.alchemist/playwright/
 **/.alchemist/scratch/
 

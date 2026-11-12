@@ -71,7 +71,7 @@ if (-not (Test-Path -LiteralPath $ticketsPath)) {
     if (-not $DryRun) { Copy-Item (Join-Path $source 'dataverse-alchemist/config/tickets.example.json') $ticketsPath }
 }
 # Project .gitignore
-$ignore = @('.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/')
+$ignore = @('.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/*.bak', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/')
 $gitignore = Join-Path $Target '.gitignore'
 $existing = if (Test-Path -LiteralPath $gitignore) { @(Get-Content -LiteralPath $gitignore) } else { @() }
 $missing = @($ignore | Where-Object { $_ -notin $existing })

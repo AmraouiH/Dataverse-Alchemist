@@ -29,7 +29,7 @@ the full example `alchemist.config.example.json` shows every option (schema: `al
    `.alchemist/tickets.json`. Tickets are then read from that file.
 4. Write the config. **No plain-text secret**: use `env:VARIABLE_NAME` and list the variables to set (e.g.
    `setx JIRA_API_TOKEN "..."` on Windows, or a `.env` file loaded by the profile).
-5. Add to the repository `.gitignore`: `.alchemist/runs/`, `.alchemist/*.local.json`, `.alchemist/playwright/` and
+5. Add to the repository `.gitignore`: `.alchemist/runs/`, `.alchemist/*.local.json`, `.alchemist/*.bak`, `.alchemist/playwright/` and
    `.claude/dataverse-alchemist/playwright/node_modules/`. Secrets entered in plain text go to
    `.alchemist/alchemist.config.local.json` (merged at load time, never committed).
 6. Run `pwsh -NoProfile -File ".claude/dataverse-alchemist/scripts/Test-AlchemistConfig.ps1"` and comment on the result.
