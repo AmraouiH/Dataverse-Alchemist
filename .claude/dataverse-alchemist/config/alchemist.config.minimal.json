@@ -1,0 +1,21 @@
+{
+  "$schema": "../.claude/dataverse-alchemist/config/alchemist.config.schema.json",
+
+  "project": { "name": "My CRM", "language": "en" },
+
+  "dataverse": {
+    "defaultEnvironment": "dev",
+    "solution": { "default": "MySolution" },
+    "environments": {
+      "dev": {
+        "url": "https://myorg-dev.crm4.dynamics.com",
+        "allowWrite": true,
+        "auth": { "type": "azcli" }
+      }
+    }
+  },
+
+  "jira": { "provider": "local", "localTicketsFile": ".alchemist/tickets.json" },
+
+  "git": { "defaultBaseBranch": "main" }
+}

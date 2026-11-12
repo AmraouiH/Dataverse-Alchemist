@@ -1,0 +1,23 @@
+# Dataverse Alchemist: local data of a CRM project (copy into the .gitignore of projects that use it)
+**/.alchemist/runs/
+**/.alchemist/*.local.json
+**/.alchemist/playwright/
+**/.alchemist/scratch/
+
+# Node tooling (Playwright)
+**/node_modules/
+playwright-report/
+test-results/
+
+# .NET build (demo plugins)
+**/bin/
+!/bin/
+**/obj/
+*.snk
+*.user
+.vs/
+
+# OS / editors
+Thumbs.db
+.DS_Store
+

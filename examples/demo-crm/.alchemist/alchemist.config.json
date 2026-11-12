@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../.claude/dataverse-alchemist/config/alchemist.config.schema.json",
+  "project": {
+    "name": "Alchemist CRM (demo)",
+    "language": "en"
+  },
+  "dataverse": {
+    "defaultEnvironment": "dev",
+    "solution": {
+      "default": "Alchemist",
+      "sourceControlled": false
+    },
+    "environments": {
+      "dev": {
+        "url": "https://myorg-dev.crm4.dynamics.com",
+        "allowWrite": true,
+        "auth": {
+          "type": "azcli"
+        }
+      }
+    }
+  },
+  "jira": {
+    "provider": "local",
+    "localTicketsFile": ".alchemist/tickets.json",
+    "postReportComment": "ask"
+  },
+  "git": {
+    "remote": "origin",
+    "defaultBaseBranch": "main",
+    "branchNamePattern": "{type}/{key}-{slug}",
+    "typeMapping": {
+      "Task": "feature",
+      "Bug": "bugfix",
+      "Story": "feature"
+    },
+    "baseBranchRules": [],
+    "commitMessagePattern": "{key}: {summary}",
+    "pushAfterCompletion": "never"
+  },
+  "devops": {
+    "provider": "none",
+    "createPullRequest": "never"
+  },
+  "allow": {
+    "tables": true,
+    "columns": true,
+    "forms": true,
+    "views": true,
+    "apps": true,
+    "ribbon": true,
+    "plugins": true,
+    "webresources": true,
+    "alternateKeys": true,
+    "businessRules": true,
+    "securityRoles": true,
+    "dataImport": true
+  },
+  "code": {
+    "plugins": {
+      "projectPath": "plugins/Alchemist.Plugins/Alchemist.Plugins.csproj",
+      "testProjectPath": "plugins/Alchemist.Plugins.Tests/Alchemist.Plugins.Tests.csproj"
+    },
+    "webresources": {
+      "rootPath": "webresources",
+      "language": "javascript"
+    }
+  },
+  "testing": {
+    "unit": {
+      "required": false
+    },
+    "e2e": {
+      "enabled": true,
+      "environment": "dev",
+      "recordPrefix": "ALCHEMIST-E2E",
+      "cleanup": true
+    },
+    "ui": {
+      "enabled": true,
+      "specFolder": "tests/ui",
+      "browser": "msedge"
+    }
+  },
+  "docs": {
+    "enabled": true,
+    "provider": "local",
+    "localPath": "docs",
+    "featurePagePattern": "features/{key}.md",
+    "tablePagePattern": "tables/{table}.md"
+  },
+  "workflow": {
+    "runsFolder": ".alchemist/runs",
+    "autoCommit": true
+  }
+}

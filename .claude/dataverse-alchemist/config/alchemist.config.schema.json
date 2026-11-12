@@ -1,0 +1,578 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dataverse Alchemist configuration",
+  "description": "Dataverse Alchemist config. Any value of the form \"env:NAME\" is replaced by the NAME environment variable (use it for every secret). An alchemist.config.local.json file (not committed) next to it overrides these values.",
+  "type": "object",
+  "required": [
+    "dataverse"
+  ],
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "description": "Language of conversations, plans and docs (en, fr…)."
+        }
+      }
+    },
+    "dataverse": {
+      "type": "object",
+      "required": [
+        "defaultEnvironment",
+        "environments"
+      ],
+      "properties": {
+        "defaultEnvironment": {
+          "type": "string",
+          "description": "Key of the development environment in 'environments'."
+        },
+        "baseLanguageCode": {
+          "type": "integer",
+          "description": "LCID of the organization base language (1033 = English, 1036 = French)."
+        },
+        "solution": {
+          "type": "object",
+          "description": "The target solution is asked for each ticket; the publisher (prefix, choice value prefix) is always that of this solution.",
+          "properties": {
+            "default": {
+              "type": "string",
+              "description": "Solution offered first when choosing (only a suggestion)."
+            },
+            "sourceControlled": {
+              "type": "boolean",
+              "description": "Unpacked solutions are committed in the repository: the agent re-syncs the ticket's solution on the branch."
+            },
+            "unpackedFolders": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Source folder per solution (unique name -> relative path)."
+            },
+            "unpackedFolderPattern": {
+              "type": "string",
+              "description": "Default source folder, placeholder {solution}."
+            },
+            "packageType": {
+              "enum": [
+                "Unmanaged",
+                "Managed",
+                "Both"
+              ]
+            },
+            "unpackCommand": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Custom unpack command; placeholders {zip} and {folder}."
+            }
+          }
+        },
+        "environments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "allowWrite": {
+                "type": "boolean",
+                "description": "false = read-only, every write is refused by the scripts. Never set true on production."
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "clientSecret",
+                      "azcli",
+                      "accessToken"
+                    ]
+                  },
+                  "tenantId": {
+                    "type": "string"
+                  },
+                  "clientId": {
+                    "type": "string"
+                  },
+                  "clientSecret": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "jira": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "enum": [
+            "jira",
+            "local"
+          ],
+          "description": "jira (default), or local to work without Jira from a ticket file (template: config/tickets.example.json)."
+        },
+        "localTicketsFile": {
+          "type": "string",
+          "description": "Local ticket file, relative to the repository. Default: .alchemist/tickets.json"
+        },
+        "baseUrl": {
+          "type": "string",
+          "description": "E.g. https://contoso.atlassian.net. Not needed with the local provider."
+        },
+        "authType": {
+          "enum": [
+            "basic",
+            "bearer"
+          ],
+          "description": "basic = email + API token (Jira Cloud) ; bearer = Personal Access Token (Jira Server/DC)."
+        },
+        "email": {
+          "type": "string"
+        },
+        "apiToken": {
+          "type": "string",
+          "description": "Toujours via env:VARIABLE."
+        },
+        "apiVersion": {
+          "enum": [
+            "2",
+            "3"
+          ],
+          "description": "2 recommended (plain-text description)."
+        },
+        "acceptanceCriteriaField": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Id of the acceptance criteria custom field (e.g. customfield_10035)."
+        },
+        "baseBranchField": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Custom field giving the base branch; takes precedence over the git rules."
+        },
+        "extraFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Other custom fields to retrieve (specifications, CRM components…)."
+        },
+        "maxComments": {
+          "type": "integer"
+        },
+        "postReportComment": {
+          "enum": [
+            "never",
+            "ask"
+          ],
+          "description": "ask (default): at the end of a ticket, offer a Jira comment with the HTML report attached and the PR link, posted only after approval."
+        }
+      }
+    },
+    "git": {
+      "type": "object",
+      "properties": {
+        "remote": {
+          "type": "string"
+        },
+        "defaultBaseBranch": {
+          "type": "string"
+        },
+        "branchNamePattern": {
+          "type": "string",
+          "description": "Placeholders : {type} {key} {slug}"
+        },
+        "typeMapping": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Jira type -> branch prefix."
+        },
+        "baseBranchRules": {
+          "type": "array",
+          "description": "Evaluated in order; the first whose branch exists wins. Placeholders of 'base': {fixVersion} {component}.",
+          "items": {
+            "type": "object",
+            "required": [
+              "when",
+              "base"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "when": {
+                "type": "object",
+                "properties": {
+                  "issueType": {},
+                  "label": {},
+                  "component": {},
+                  "fixVersion": {},
+                  "priority": {}
+                }
+              },
+              "base": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "commitMessagePattern": {
+          "type": "string",
+          "description": "Placeholders : {key} {summary}"
+        },
+        "pushAfterCompletion": {
+          "enum": [
+            "never",
+            "ask"
+          ]
+        }
+      }
+    },
+    "devops": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "enum": [
+            "azureDevOps",
+            "github",
+            "none"
+          ]
+        },
+        "organizationUrl": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        },
+        "pat": {
+          "type": "string"
+        },
+        "createPullRequest": {
+          "enum": [
+            "never",
+            "ask"
+          ]
+        },
+        "pullRequestAsDraft": {
+          "type": "boolean"
+        },
+        "defaultReviewerIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "allow": {
+      "type": "object",
+      "description": "What the agent is allowed to do. A capability set to false is classified as manual in the plan. When absent: everything is allowed except securityRoles and dataImport.",
+      "properties": {
+        "tables": {
+          "type": "boolean",
+          "default": true
+        },
+        "columns": {
+          "type": "boolean",
+          "default": true
+        },
+        "forms": {
+          "type": "boolean",
+          "default": true
+        },
+        "views": {
+          "type": "boolean",
+          "default": true
+        },
+        "apps": {
+          "type": "boolean",
+          "default": true
+        },
+        "ribbon": {
+          "type": "boolean",
+          "default": true
+        },
+        "plugins": {
+          "type": "boolean",
+          "default": true
+        },
+        "webresources": {
+          "type": "boolean",
+          "default": true
+        },
+        "alternateKeys": {
+          "type": "boolean",
+          "default": true
+        },
+        "businessRules": {
+          "type": "boolean",
+          "default": true
+        },
+        "securityRoles": {
+          "type": "boolean",
+          "default": false
+        },
+        "dataImport": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "code": {
+      "type": "object",
+      "properties": {
+        "plugins": {
+          "type": "object",
+          "properties": {
+            "solutionPath": {
+              "type": "string"
+            },
+            "projectPath": {
+              "type": "string"
+            },
+            "testProjectPath": {
+              "type": "string"
+            },
+            "buildConfiguration": {
+              "type": "string"
+            },
+            "outputDll": {
+              "type": "string"
+            },
+            "deploymentMode": {
+              "enum": [
+                "assembly",
+                "package"
+              ],
+              "description": "package = NuGet plugin package, deployed by pac plugin push."
+            },
+            "testFramework": {
+              "type": "string",
+              "description": "auto | FakeXrmEasy | XrmMockup | Moq…"
+            }
+          }
+        },
+        "webresources": {
+          "type": "object",
+          "properties": {
+            "rootPath": {
+              "type": "string"
+            },
+            "language": {
+              "enum": [
+                "typescript",
+                "javascript"
+              ]
+            },
+            "installCommand": {
+              "type": "string"
+            },
+            "buildCommand": {
+              "type": "string"
+            },
+            "lintCommand": {
+              "type": "string"
+            },
+            "distPath": {
+              "type": "string"
+            },
+            "namePattern": {
+              "type": "string",
+              "description": "Placeholders : {prefix} {table}"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "testing": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "object",
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "pluginsCommand": {
+              "type": "string"
+            },
+            "webresourcesCommand": {
+              "type": "string"
+            }
+          }
+        },
+        "e2e": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "environment": {
+              "type": "string"
+            },
+            "recordPrefix": {
+              "type": "string",
+              "description": "Test data prefix (no [ or _: they are wildcards in a filter)"
+            },
+            "cleanup": {
+              "type": "boolean"
+            },
+            "checkPluginTraceLogs": {
+              "type": "boolean"
+            }
+          }
+        },
+        "ui": {
+          "type": "object",
+          "description": "Tests navigateur Playwright (formulaires, vues, navigation, comportements).",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Generate and run the browser tests at the end of a ticket"
+            },
+            "specFolder": {
+              "type": "string",
+              "default": "tests/ui",
+              "description": "Folder of the generated test scripts (committed), relative to the project"
+            },
+            "browser": {
+              "type": "string",
+              "enum": [
+                "msedge",
+                "chrome",
+                "chromium"
+              ],
+              "default": "msedge",
+              "description": "Browser (msedge and chrome use the installed browser)"
+            },
+            "sessionHours": {
+              "type": "number",
+              "default": 8,
+              "description": "How long the CRM session is reused before signing in again"
+            }
+          }
+        }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "provider": {
+          "enum": [
+            "local",
+            "azureDevOpsWiki",
+            "none"
+          ],
+          "description": "local = markdown in the repository (committed on the branch); azureDevOpsWiki = project wiki through the API."
+        },
+        "url": {
+          "type": "string",
+          "description": "Link to the project's functional/technical documentation (cited in plans and PRs)."
+        },
+        "localPath": {
+          "type": "string"
+        },
+        "featurePagePattern": {
+          "type": "string",
+          "description": "Documentation page per ticket. Placeholders: {key} {slug}"
+        },
+        "tablePagePattern": {
+          "type": "string",
+          "description": "Data dictionary page per table. Placeholder: {table}"
+        },
+        "wiki": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "rootPath": {
+              "type": "string"
+            }
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Read-only reference links (Microsoft docs, internal standards…)."
+        }
+      }
+    },
+    "report": {
+      "type": "object",
+      "properties": {
+        "crmUserEmail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Email of the CRM user whose interface language is used for the report (put it in the .local.json). Default: jira.email, otherwise the signed-in user. Also identifies their personal knowledge base."
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "description": "Approvals (plan, Dataverse writes, push, PR, Jira comment, wiki) are always mandatory and not configurable.",
+      "properties": {
+        "runsFolder": {
+          "type": "string"
+        },
+        "autoCommit": {
+          "type": "boolean",
+          "description": "Local commits on the ticket branch during implementation (never a push without approval)."
+        }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Enabled development skills. A need covered by a skill that is not enabled is listed as 'manual' in the plan."
+        }
+      },
+      "description": "Deprecated: replaced by \"allow\". skills.enabled is still read when \"allow\" is absent."
+    },
+    "$schema": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Alchemist - Agent configuration</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#1d2330; --muted:#667085; --accent:#5b4fe0; --border:#e4e7ec; --warn:#b54708; --ok:#067647; --ko:#b42318; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:24px 32px 0; }
+  h1 { margin:0; font-size:22px; }
+  header p { margin:4px 0 0; color:var(--muted); }
+  nav { display:flex; gap:4px; padding:16px 32px 0; border-bottom:1px solid var(--border); }
+  nav button { background:none; color:var(--muted); border:none; border-bottom:2px solid transparent; border-radius:0; padding:10px 14px; font-size:14px; cursor:pointer; }
+  nav button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+  main { max-width:920px; padding:20px 32px 110px; }
+  .tab { display:none; } .tab.active { display:block; }
+  section { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:4px 20px 12px; margin-bottom:18px; }
+  section h2 { font-size:15px; margin:16px 0 4px; display:flex; justify-content:space-between; align-items:center; }
+  .note { color:var(--muted); font-size:13px; margin:4px 0 8px; }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid var(--border); }
+  section h2 + .row, .note + .row { border-top:none; }
+  .label strong { display:block; font-weight:600; font-size:14px; }
+  .label span { color:var(--muted); font-size:13px; }
+  .warn { color:var(--warn) !important; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; padding:8px 0; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field.full { grid-column:1 / -1; }
+  .field label { font-size:13px; font-weight:600; }
+  .field small { color:var(--muted); font-size:12px; }
+  input[type=text], input[type=password], select, textarea { font:inherit; font-size:14px; padding:7px 10px; border:1px solid #d0d5dd; border-radius:7px; background:#fff; width:100%; }
+  textarea { min-height:70px; font-family:Consolas,monospace; font-size:13px; }
+  input:focus, select:focus, textarea:focus { outline:2px solid var(--accent); outline-offset:-1px; border-color:transparent; }
+  .secret { display:flex; gap:6px; } .secret input { flex:1; }
+  .env { border:1px solid var(--border); border-radius:8px; padding:8px 14px; margin:10px 0; }
+  .env h3 { margin:6px 0; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+  .switch { position:relative; width:42px; height:24px; flex-shrink:0; display:inline-block; }
+  .switch input { opacity:0; width:0; height:0; }
+  .slider { position:absolute; inset:0; background:#d0d5dd; border-radius:24px; cursor:pointer; transition:.15s; }
+  .slider::before { content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.15s; }
+  .switch input:checked + .slider { background:var(--accent); }
+  .switch input:checked + .slider::before { transform:translateX(18px); }
+  .switch input:focus-visible + .slider { outline:2px solid var(--accent); outline-offset:2px; }
+  button { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:14px; cursor:pointer; }
+  button.ghost { background:#fff; color:var(--text); border:1px solid #d0d5dd; padding:6px 12px; font-size:13px; }
+  button.danger { color:var(--ko); }
+  button:disabled { opacity:.5; cursor:default; }
+  footer { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1px solid var(--border); padding:12px 32px; display:flex; gap:12px; align-items:center; }
+  #status { color:var(--muted); font-size:13px; }
+  pre#testOut { white-space:pre-wrap; font-size:12px; background:#101828; color:#e4e7ec; padding:12px; border-radius:8px; max-height:340px; overflow:auto; display:none; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Agent configuration</h1>
+  <p id="sub">Loading…</p>
+</header>
+<nav>
+  <button data-tab="perm" class="active">Permissions</button>
+  <button data-tab="dv">Dataverse</button>
+  <button data-tab="tickets">Tickets</button>
+  <button data-tab="git">Git and DevOps</button>
+</nav>
+<main id="main"></main>
+<footer>
+  <button id="save" disabled>Save</button>
+  <button id="test" class="ghost">Test connections</button>
+  <span id="status"></span>
+</footer>
+
+<script>
+// Capabilities: "allow" section of the config. Default (absent): everything except security roles and data import.
+const CAPS = [
+  ["columns", "Column creation", "Text, number, date, choice, lookup and Power Fx formula columns"],
+  ["tables", "Tables and global choices", "New custom tables and shared lists of values"],
+  ["forms", "Forms", "Create a form, add tabs, sections, fields and JS handlers"],
+  ["views", "Views", "Create or change public views (columns, sort, filter)"],
+  ["apps", "Model-driven apps", "Create an app and its sitemap, add tables"],
+  ["ribbon", "Ribbon buttons", "Command bar buttons and enable rules"],
+  ["plugins", "C# plugins", "Develop, deploy the assembly and register the steps"],
+  ["webresources", "JS/TS web resources", "Form scripts, deployment and publishing"],
+  ["alternateKeys", "Alternate keys", "Make a value unique (duplicate check, index)"],
+  ["businessRules", "Simple business rules", "When a field equals (or not) a value: fields required, optional or hidden"],
+  ["securityRoles", "Security roles", "Create a role and its table privileges, link it to an app"],
+  ["dataImport", "Data import", "CSV file upsert on an alternate key, without duplicates"],
+];
+const CAP_DEFAULT_OFF = new Set(["securityRoles", "dataImport"]);
+const LEGACY_SKILL = { tables: "dataverse-create-table", columns: "dataverse-create-column", forms: "dataverse-form-field", views: "dataverse-view", apps: "dataverse-model-driven-app", ribbon: "dataverse-ribbon", plugins: "dataverse-plugin", webresources: "dataverse-webresource", securityRoles: "dataverse-security-role", alternateKeys: "dataverse-alternate-key", businessRules: "dataverse-business-rule", dataImport: "dataverse-data-import" };
+const isAllowed = k => cfg.allow && k in cfg.allow ? !!cfg.allow[k] : cfg.skills?.enabled ? cfg.skills.enabled.includes(LEGACY_SKILL[k]) : !CAP_DEFAULT_OFF.has(k);
+const AUTH = { azcli: "Current user account (Azure CLI)", clientSecret: "Application (client ID + secret)", accessToken: "Provided access token" };
+
+let cfg, loc, dirty = false, activeTab = "perm";
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+// --- access by path "a/b/c" ---
+const get = (o, p) => p.split("/").reduce((x, k) => x?.[k], o);
+function set(o, p, v) { const ks = p.split("/"); const last = ks.pop(); ks.reduce((x, k) => (x[k] ??= {}), o)[last] = v; }
+function del(o, p) {
+  const ks = p.split("/"), stack = [o];
+  for (const k of ks.slice(0, -1)) { const n = stack.at(-1)?.[k]; if (!n) return; stack.push(n); }
+  delete stack.at(-1)[ks.at(-1)];
+  for (let i = stack.length - 1; i > 0; i--) if (!Object.keys(stack[i]).length) delete stack[i - 1][ks[i - 1]];
+}
+
+// --- components ---
+const toggleRow = (attrs, title, desc, checked, warn) => `<div class="row"><div class="label"><strong>${title}</strong><span class="${warn ? "warn" : ""}">${desc}</span></div>
+  <label class="switch"><input type="checkbox" ${attrs} ${checked ? "checked" : ""} aria-label="${esc(title)}"><span class="slider"></span></label></div>`;
+const text = (path, label, hint = "", ph = "", full = false) => `<div class="field ${full ? "full" : ""}"><label>${label}</label>
+  <input type="text" data-path="${path}" value="${esc(get(cfg, path))}" placeholder="${esc(ph)}">${hint ? `<small>${hint}</small>` : ""}</div>`;
+const select = (path, label, opts, hint = "", extra = "") => `<div class="field"><label>${label}</label>
+  <select data-path="${path}" ${extra}>${Object.entries(opts).map(([v, t]) => `<option value="${v}" ${get(cfg, path) === v ? "selected" : ""}>${t}</option>`).join("")}</select>${hint ? `<small>${hint}</small>` : ""}</div>`;
+const secret = (path, label) => `<div class="field"><label>${label}</label>
+  <div class="secret"><input type="password" data-path="${path}" data-secret value="${esc(get(loc, path) ?? get(cfg, path))}" placeholder="value or env:VARIABLE_NAME" autocomplete="off">
+  <button class="ghost" type="button" data-reveal>Show</button></div>
+  <small>Plain value: stored in the git-ignored local file. <code>env:NAME</code>: read from an environment variable.</small></div>`;
+
+function render() {
+  const envs = cfg.dataverse.environments ??= {};
+  $("#sub").textContent = `${cfg.project?.name ?? "Project"} - .alchemist/alchemist.config.json`;
+
+  $("#main").innerHTML = `
+  <div class="tab" id="tab-perm">
+    <section><h2>Dataverse development</h2>
+      <p class="note">A disabled action is never executed by the agent: it is listed as "manual" in the plan.</p>
+      ${CAPS.map(([k, t, d]) => toggleRow(`data-cap="${k}"`, t, d, isAllowed(k))).join("")}
+    </section>
+    <section><h2>Write access per environment</h2>
+      ${Object.entries(envs).map(([n, e]) => toggleRow(`data-path="dataverse/environments/${n}/allowWrite" data-bool`, n, (e.url || "URL not set") + " - off = read-only. Never on for production.", e.allowWrite, true)).join("")}
+    </section>
+    <section><h2>Git and sharing</h2>
+      ${toggleRow('data-path="workflow/autoCommit" data-bool', "Automatic local commits", "Commits on the ticket branch during implementation", cfg.workflow?.autoCommit)}
+      ${toggleRow('data-path="git/pushAfterCompletion" data-ask', "Push to the remote", "On = offers the push (always after your approval)", cfg.git?.pushAfterCompletion === "ask")}
+      ${toggleRow('data-path="devops/createPullRequest" data-ask', "Pull request creation", "On = offers the PR (always after your approval)", cfg.devops?.createPullRequest === "ask")}
+      ${toggleRow('data-path="jira/postReportComment" data-ask', "Jira comment with the report", "On = offers the comment at the end of the ticket", cfg.jira?.postReportComment === "ask")}
+    </section>
+    <section><h2>Tests and documentation</h2>
+      ${toggleRow('data-path="testing/e2e/enabled" data-bool', "End-to-end tests on the environment", "Creates then cleans up test records", cfg.testing?.e2e?.enabled)}
+      ${toggleRow('data-path="testing/ui/enabled" data-bool', "Browser tests (Playwright)", "Generates and runs tests of forms, views, navigation and behaviors", cfg.testing?.ui?.enabled ?? true)}
+      ${toggleRow('data-path="docs/enabled" data-bool', "Documentation updates", "Feature pages and data dictionary", cfg.docs?.enabled)}
+    </section>
+  </div>
+
+  <div class="tab" id="tab-dv">
+    <section><h2>General</h2>
+      <div class="grid">
+        ${select("dataverse/defaultEnvironment", "Development environment", Object.fromEntries(Object.keys(envs).map(k => [k, k])))}
+        ${text("dataverse/solution/default", "Default solution", "Unique name; the solution is confirmed for each ticket.")}
+        ${text("dataverse/baseLanguageCode", "Base language (LCID)", "1033 = English, 1036 = French", "1033")}
+      </div>
+    </section>
+    <section><h2>Environments <button class="ghost" type="button" id="addEnv">+ Add</button></h2>
+      ${Object.entries(envs).map(([n, e]) => {
+        const p = `dataverse/environments/${n}`, type = e.auth?.type ?? "azcli";
+        return `<div class="env"><h3>${esc(n)} <button class="ghost danger" type="button" data-remove-env="${esc(n)}">Remove</button></h3>
+          <div class="grid">
+            ${text(p + "/url", "URL", "", "https://myorg.crm4.dynamics.com", true)}
+            ${select(p + "/auth/type", "Authentication", AUTH, type === "azcli" ? "Uses the account signed in with <code>az login</code>." : "", "data-auth-select")}
+            <div class="field"></div>
+            <div data-auth="clientSecret" ${type === "clientSecret" ? "" : "hidden"} class="field full"><div class="grid">
+              ${text(p + "/auth/tenantId", "Tenant ID", "", "00000000-0000-0000-0000-000000000000")}
+              ${text(p + "/auth/clientId", "Client ID (application)", "", "00000000-0000-0000-0000-000000000000")}
+              ${secret(p + "/auth/clientSecret", "Client secret")}
+            </div></div>
+            <div data-auth="accessToken" ${type === "accessToken" ? "" : "hidden"} class="field full"><div class="grid">
+              ${secret(p + "/auth/token", "Access token")}
+            </div></div>
+          </div></div>`;
+      }).join("")}
+    </section>
+  </div>
+
+  <div class="tab" id="tab-tickets">
+    <section><h2>Ticket source</h2>
+      <div class="grid">${select("jira/provider", "Provider", { jira: "Jira", local: "Local file (no Jira)" }, "", "data-provider")}</div>
+      <p class="note">Azure DevOps work items are not supported as a ticket source yet.</p>
+      <div data-show="jira/provider=local" class="grid">${text("jira/localTicketsFile", "Ticket file", "Relative to the repository", ".alchemist/tickets.json")}</div>
+      <div data-show="jira/provider=jira" class="grid">
+        ${text("jira/baseUrl", "Jira URL", "", "https://mycompany.atlassian.net", true)}
+        ${select("jira/authType", "Authentication", { basic: "Email + API token (Jira Cloud)", bearer: "Personal Access Token (Server/DC)" })}
+        ${select("jira/apiVersion", "API version", { "2": "2 (recommended)", "3": "3" })}
+        ${text("jira/email", "Email", "For basic authentication")}
+        ${secret("jira/apiToken", "API token / PAT")}
+        ${text("jira/acceptanceCriteriaField", "Acceptance criteria field", "", "customfield_10035")}
+        ${text("jira/baseBranchField", "Base branch field", "Takes precedence over the git rules", "customfield_10100")}
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-git">
+    <section><h2>Git</h2>
+      <div class="grid">
+        ${text("git/remote", "Remote", "", "origin")}
+        ${text("git/defaultBaseBranch", "Default base branch", "", "main")}
+        ${text("git/branchNamePattern", "Branch names", "Placeholders : {type} {key} {slug}", "{type}/{key}-{slug}")}
+        ${text("git/commitMessagePattern", "Commit message", "Placeholders : {key} {summary}", "{key}: {summary}")}
+        <div class="field full"><label>Branch prefix per ticket type</label>
+          <textarea data-map="git/typeMapping">${esc(Object.entries(cfg.git?.typeMapping ?? {}).map(([k, v]) => `${k}=${v}`).join("\n"))}</textarea>
+          <small>One line per type: <code>Bug=bugfix</code></small></div>
+      </div>
+    </section>
+    <section><h2>Repository hosting and pull requests</h2>
+      <div class="grid">${select("devops/provider", "Provider", { none: "None", azureDevOps: "Azure DevOps", github: "GitHub" }, "", "data-provider")}</div>
+      <div data-show="devops/provider=azureDevOps" class="grid">
+        ${text("devops/organizationUrl", "Organization URL", "", "https://dev.azure.com/myorg", true)}
+        ${text("devops/project", "Project")}
+        ${text("devops/repository", "Repository")}
+        ${secret("devops/pat", "Personal Access Token")}
+      </div>
+      <div data-show="devops/provider=github" class="grid">
+        ${text("devops/repository", "Repository", "owner/name", "myorg/my-repo")}
+        ${secret("devops/pat", "GitHub token")}
+        <div class="field full"><small>If the token is empty, the signed-in <code>gh</code> CLI is used.</small></div>
+      </div>
+      <div data-show="devops/provider!=none" class="grid">
+        <div class="field"><label>Draft PR</label>
+          <label class="switch"><input type="checkbox" data-path="devops/pullRequestAsDraft" data-bool ${cfg.devops?.pullRequestAsDraft ? "checked" : ""}><span class="slider"></span></label></div>
+        <div class="field"><label>Default reviewers</label>
+          <input type="text" data-path="devops/defaultReviewerIds" data-list value="${esc((cfg.devops?.defaultReviewerIds ?? []).join(", "))}"><small>Comma-separated ids</small></div>
+      </div>
+    </section>
+  </div>`;
+  showTab(activeTab);
+  refreshVisibility();
+}
+
+function refreshVisibility() {
+  document.querySelectorAll("[data-show]").forEach(el => {
+    const [, path, op, val] = el.dataset.show.match(/^(.+?)(!?=)(.+)$/);
+    const cur = document.querySelector(`[data-path="${path}"]`)?.value;
+    const show = op === "=" ? cur === val : cur !== val;
+    el.hidden = !show;
+    // The same field can appear in two blocks (e.g. repository): only the visible block counts.
+    el.querySelectorAll("[data-path]").forEach(i => i.disabled = !show);
+  });
+  document.querySelectorAll(".env").forEach(env => {
+    const type = env.querySelector("[data-auth-select]").value;
+    env.querySelectorAll("[data-auth]").forEach(b => { b.hidden = b.dataset.auth !== type; b.querySelectorAll("input").forEach(i => i.disabled = b.hidden); });
+  });
+}
+
+function collect() {
+  document.querySelectorAll("[data-path]:not(:disabled)").forEach(el => {
+    const p = el.dataset.path;
+    if ("bool" in el.dataset) return set(cfg, p, el.checked);
+    if ("ask" in el.dataset) return set(cfg, p, el.checked ? "ask" : "never");
+    if ("list" in el.dataset) { const l = el.value.split(",").map(s => s.trim()).filter(Boolean); return l.length ? set(cfg, p, l) : del(cfg, p); }
+    const v = el.value.trim();
+    if ("secret" in el.dataset) {
+      del(loc, p); del(cfg, p);
+      if (v.startsWith("env:")) set(cfg, p, v); else if (v) set(loc, p, v);  // never a plain-text secret in the committed config
+      return;
+    }
+    if (!v) return del(cfg, p);
+    set(cfg, p, p.endsWith("baseLanguageCode") && /^\d+$/.test(v) ? Number(v) : v);
+  });
+  document.querySelectorAll("[data-map]").forEach(el => {
+    const m = Object.fromEntries(el.value.split("\n").map(l => l.split("=").map(s => s.trim())).filter(([k, v]) => k && v));
+    set(cfg, el.dataset.map, m);
+  });
+  cfg.allow = Object.fromEntries([...document.querySelectorAll("[data-cap]")].map(i => [i.dataset.cap, i.checked]));
+  if (cfg.skills) { delete cfg.skills.enabled; if (!Object.keys(cfg.skills).length) delete cfg.skills; }  // replaced by "allow"
+}
+
+function markDirty() { dirty = true; $("#save").disabled = false; $("#status").textContent = "Unsaved changes"; }
+function showTab(t) {
+  activeTab = t;
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.tab === t));
+  document.querySelectorAll(".tab").forEach(d => d.classList.toggle("active", d.id === "tab-" + t));
+}
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$("#main").addEventListener("input", markDirty);
+$("#main").addEventListener("change", e => { markDirty(); if (e.target.matches("[data-auth-select],[data-provider]")) refreshVisibility(); });
+$("#main").addEventListener("click", e => {
+  const t = e.target;
+  if (t.matches("[data-reveal]")) { const i = t.previousElementSibling; i.type = i.type === "password" ? "text" : "password"; t.textContent = i.type === "password" ? "Show" : "Hide"; }
+  if (t.id === "addEnv") {
+    const name = prompt("Environment name (letters, digits, - and _):");
+    if (!name) return;
+    if (!/^[\w-]+$/.test(name) || cfg.dataverse.environments[name]) return alert("Invalid or already used name.");
+    collect(); cfg.dataverse.environments[name] = { url: "", allowWrite: false, auth: { type: "azcli" } }; render(); markDirty();
+  }
+  if (t.dataset.removeEnv) {
+    const n = t.dataset.removeEnv;
+    if (n === cfg.dataverse.defaultEnvironment) return alert("The default development environment cannot be removed.");
+    if (!confirm(`Remove the "${n}" environment?`)) return;
+    collect(); delete cfg.dataverse.environments[n]; del(loc, "dataverse/environments/" + n); render(); markDirty();
+  }
+});
+
+$("#save").onclick = async () => {
+  collect();
+  const res = await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ config: cfg, local: loc }) });
+  const out = await res.json();
+  if (out.ok) { dirty = false; $("#save").disabled = true; $("#status").textContent = "Saved (.bak copies kept)"; render(); }
+  else $("#status").textContent = "Error: " + out.error;
+};
+
+$("#test").onclick = async () => {
+  if (dirty && !confirm("The test uses the saved config. Test anyway without saving?")) return;
+  $("#test").disabled = true; $("#status").textContent = "Testing…";
+  let pre = $("#testOut");
+  if (!pre) { pre = document.createElement("pre"); pre.id = "testOut"; $("#main").prepend(pre); }
+  try {
+    const out = await (await fetch("/api/test", { method: "POST" })).json();
+    pre.textContent = out.output ?? out.error; pre.style.display = "block";
+    $("#status").textContent = out.ok ? "Test finished" : "Test finished with errors";
+  } finally { $("#test").disabled = false; }
+};
+window.onbeforeunload = () => dirty ? true : undefined;
+
+fetch("/api/config").then(r => r.json()).then(d => { cfg = d.config; loc = d.local ?? {}; render(); })
+  .catch(e => $("#sub").textContent = "Cannot read the config: " + e);
+</script>
+</body>
+</html>
+

@@ -1,0 +1,180 @@
+{
+  "$schema": "../.claude/dataverse-alchemist/config/alchemist.config.schema.json",
+  "project": {
+    "name": "Contoso CRM",
+    "language": "en"
+  },
+  "dataverse": {
+    "defaultEnvironment": "dev",
+    "baseLanguageCode": 1033,
+    "solution": {
+      "default": "ContosoCore",
+      "sourceControlled": true,
+      "unpackedFolders": {
+        "ContosoCore": "src/Solutions/ContosoCore"
+      },
+      "unpackedFolderPattern": "src/Solutions/{solution}",
+      "packageType": "Unmanaged",
+      "unpackCommand": null
+    },
+    "environments": {
+      "dev": {
+        "url": "https://contoso-dev.crm4.dynamics.com",
+        "allowWrite": true,
+        "auth": {
+          "type": "clientSecret",
+          "tenantId": "env:DATAVERSE_TENANT_ID",
+          "clientId": "env:DATAVERSE_CLIENT_ID",
+          "clientSecret": "env:DATAVERSE_CLIENT_SECRET"
+        }
+      },
+      "uat": {
+        "url": "https://contoso-uat.crm4.dynamics.com",
+        "allowWrite": false,
+        "auth": {
+          "type": "azcli"
+        }
+      }
+    }
+  },
+  "jira": {
+    "provider": "jira",
+    "baseUrl": "https://contoso.atlassian.net",
+    "authType": "basic",
+    "email": "env:JIRA_EMAIL",
+    "apiToken": "env:JIRA_API_TOKEN",
+    "apiVersion": "2",
+    "acceptanceCriteriaField": "customfield_10035",
+    "baseBranchField": null,
+    "extraFields": [],
+    "maxComments": 20,
+    "postReportComment": "ask"
+  },
+  "git": {
+    "remote": "origin",
+    "defaultBaseBranch": "develop",
+    "branchNamePattern": "{type}/{key}-{slug}",
+    "typeMapping": {
+      "Story": "feature",
+      "Task": "feature",
+      "Bug": "bugfix",
+      "Hotfix": "hotfix"
+    },
+    "baseBranchRules": [
+      {
+        "description": "Hotfix from main",
+        "when": {
+          "issueType": [
+            "Hotfix"
+          ]
+        },
+        "base": "main"
+      },
+      {
+        "description": "Hotfix label from main",
+        "when": {
+          "label": [
+            "hotfix"
+          ]
+        },
+        "base": "main"
+      },
+      {
+        "description": "Release of the fix version if it exists",
+        "when": {
+          "fixVersion": "*"
+        },
+        "base": "release/{fixVersion}"
+      }
+    ],
+    "commitMessagePattern": "{key}: {summary}",
+    "pushAfterCompletion": "ask"
+  },
+  "devops": {
+    "provider": "azureDevOps",
+    "organizationUrl": "https://dev.azure.com/contoso",
+    "project": "CRM",
+    "repository": "crm",
+    "pat": "env:AZDO_PAT",
+    "createPullRequest": "ask",
+    "pullRequestAsDraft": true,
+    "defaultReviewerIds": []
+  },
+  "allow": {
+    "tables": true,
+    "columns": true,
+    "forms": true,
+    "views": true,
+    "apps": true,
+    "ribbon": true,
+    "plugins": true,
+    "webresources": true,
+    "alternateKeys": true,
+    "businessRules": true,
+    "securityRoles": false,
+    "dataImport": false
+  },
+  "code": {
+    "plugins": {
+      "solutionPath": "src/Plugins/Contoso.Plugins.sln",
+      "projectPath": "src/Plugins/Contoso.Plugins/Contoso.Plugins.csproj",
+      "testProjectPath": "src/Plugins/Contoso.Plugins.Tests/Contoso.Plugins.Tests.csproj",
+      "buildConfiguration": "Release",
+      "outputDll": "src/Plugins/Contoso.Plugins/bin/Release/net462/Contoso.Plugins.dll",
+      "deploymentMode": "assembly",
+      "testFramework": "auto"
+    },
+    "webresources": {
+      "rootPath": "src/WebResources",
+      "language": "typescript",
+      "installCommand": "npm ci",
+      "buildCommand": "npm run build",
+      "lintCommand": "npm run lint",
+      "distPath": "src/WebResources/dist",
+      "namePattern": "{prefix}_/js/{table}.form.js",
+      "namespace": "Contoso"
+    }
+  },
+  "testing": {
+    "unit": {
+      "required": true,
+      "pluginsCommand": "dotnet test src/Plugins/Contoso.Plugins.Tests/Contoso.Plugins.Tests.csproj -c Release",
+      "webresourcesCommand": "npm test --prefix src/WebResources"
+    },
+    "e2e": {
+      "enabled": true,
+      "environment": "dev",
+      "recordPrefix": "ALCHEMIST-E2E",
+      "cleanup": true,
+      "checkPluginTraceLogs": true
+    },
+    "ui": {
+      "enabled": true,
+      "specFolder": "tests/ui",
+      "browser": "msedge",
+      "sessionHours": 8
+    }
+  },
+  "docs": {
+    "enabled": true,
+    "provider": "local",
+    "url": "https://dev.azure.com/contoso/CRM/_wiki/wikis/CRM.wiki",
+    "localPath": "docs",
+    "featurePagePattern": "features/{key}.md",
+    "tablePagePattern": "tables/{table}.md",
+    "wiki": {
+      "name": "CRM.wiki",
+      "rootPath": "/CRM"
+    },
+    "references": [
+      "https://learn.microsoft.com/power-apps/developer/data-platform/"
+    ]
+  },
+  "report": {
+    "crmUserEmail": null
+  },
+  "workflow": {
+    "runsFolder": ".alchemist/runs",
+    "autoCommit": true
+  }
+}

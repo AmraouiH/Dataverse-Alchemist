@@ -1,0 +1,41 @@
+{
+  "name": "dataverse-alchemist",
+  "version": "0.2.0",
+  "description": "Claude Code agent that delivers Dynamics 365 / Dataverse tickets end to end: plan, build, test (Playwright), document, report.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "agent",
+    "dynamics-365",
+    "dataverse",
+    "power-platform",
+    "model-driven-apps",
+    "playwright"
+  ],
+  "license": "MIT",
+  "author": "hamza",
+  "repository": "github:AmraouiH/dataverse-alchemist",
+  "homepage": "https://github.com/AmraouiH/dataverse-alchemist#readme",
+  "type": "module",
+  "bin": {
+    "dataverse-alchemist": "bin/cli.mjs"
+  },
+  "files": [
+    "bin/",
+    ".claude/agents/",
+    ".claude/commands/",
+    ".claude/skills/",
+    ".claude/dataverse-alchemist/",
+    "!.claude/dataverse-alchemist/playwright/node_modules/",
+    "docs/",
+    "SETUP.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "version": "node -e \"require('fs').writeFileSync('.claude/dataverse-alchemist/VERSION', require('./package.json').version)\" && git add .claude/dataverse-alchemist/VERSION",
+    "prepublishOnly": "node bin/cli.mjs --version"
+  }
+}

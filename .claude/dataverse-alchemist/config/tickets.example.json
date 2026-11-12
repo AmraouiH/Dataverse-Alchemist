@@ -1,0 +1,84 @@
+[
+  {
+    "key": "CRM-301",
+    "summary": "Create the Service Contract table with its form and views",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "High",
+    "labels": ["crm", "data-model"],
+    "reporter": "Service team",
+    "description": "We want to track our customers' service contracts in the CRM.\n\nCreate a Service Contract table with: the account, the primary contact, the start date, the end date, the annual amount, the contract type (Bronze, Silver, Gold), the contract status (Draft, Active, Expired, Terminated) and special terms.\n\nA form and views are needed. No mockup is provided: propose a layout.",
+    "acceptanceCriteria": "- The table exists in the Alchemist solution.\n- A view shows active contracts.\n- A view shows contracts expiring within 90 days.\n- The form shows every field, with an approved mockup."
+  },
+  {
+    "key": "CRM-302",
+    "summary": "Add a test lookup on the contact, below the first name",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": ["crm"],
+    "reporter": "Demo user",
+    "description": "On the contact table, create a new lookup field named test in English and essai in French, pointing to the account table. Add it to the form below firstname.",
+    "acceptanceCriteria": "- The field is a lookup to account.\n- Labels are present in English and French.\n- The field is right below the first name on the form."
+  },
+  {
+    "key": "CRM-303",
+    "summary": "Add the customer segment on the account",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": ["crm"],
+    "reporter": "Sales management",
+    "description": "Add a Customer segment field on the account with the values SMB, Mid-market and Enterprise. It must be visible on the Account form and in the active accounts view.",
+    "acceptanceCriteria": "- The field offers the three values.\n- It is visible on the Account form.\n- It is visible in the active accounts view."
+  },
+  {
+    "key": "CRM-304",
+    "summary": "Legal representative check button on the account",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Low",
+    "labels": ["crm", "ribbon"],
+    "reporter": "Compliance team",
+    "description": "Add a Check representative button on the account form. It shows the name of the legal representative, and is only enabled when the Legal Rep field is filled in. The action and the enable rule must be in JavaScript.",
+    "acceptanceCriteria": "- The button is disabled when Legal Rep is empty.\n- The button becomes enabled as soon as the field is filled in.\n- The button shows the representative's name."
+  },
+  {
+    "key": "CRM-305",
+    "summary": "Add priority and channel to the active requests view",
+    "issueType": "Task",
+    "status": "In Progress",
+    "statusCategory": "indeterminate",
+    "priority": "Medium",
+    "labels": ["crm"],
+    "reporter": "Service team",
+    "description": "In the Active Service Requests view of the Service Request table, add the Priority and Channel columns, and sort by priority.",
+    "acceptanceCriteria": "- Both columns are in the view.\n- The view is sorted by priority."
+  },
+  {
+    "key": "CRM-306",
+    "summary": "Create the Legal Rep field on the account",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "High",
+    "labels": ["crm"],
+    "reporter": "Compliance team",
+    "description": "Create a lookup to contact on the account, named legal rep in English and representant legal in French, below Ticker Symbol."
+  },
+  {
+    "key": "CRM-307",
+    "summary": "Create the Service Request table and its form",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": ["crm"],
+    "reporter": "Service team",
+    "description": "Create a table with its fields, form and views, with a mockup to approve."
+  }
+]

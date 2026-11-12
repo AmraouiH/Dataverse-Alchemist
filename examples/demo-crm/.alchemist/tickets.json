@@ -1,0 +1,1049 @@
+[
+  {
+    "key": "CRM-301",
+    "summary": "Create the Contrat de service (service contract) table with its form and views",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "High",
+    "labels": [
+      "crm",
+      "data-model"
+    ],
+    "reporter": "Service team",
+    "description": "We want to track our customers' service contracts in the CRM.\n\nCreate a Contrat de service table with: the account, the primary contact, the start date, the end date, the annual amount, the contract type (Bronze, Silver, Gold), the contract status (Brouillon, Actif, Expiré, Résilié) and special terms.\n\nA form and views are needed. No mockup is provided: propose a layout.",
+    "acceptanceCriteria": "- The table exists in the Alchemist solution.\n- A view shows active contracts.\n- A view shows contracts expiring within 90 days.\n- The form shows every field, with an approved mockup.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T12:14:27.7360966Z",
+        "body": "Ticket CRM-301 delivered (status: partially done, manual actions remaining).\n\nDelivered in solution Alchemist (publisher rohzot, prefix rhz_):\n- Table Service contract (rhz_contratservice), with 9 columns and 2 lookup relationships (account, primary contact).\n- Information main form, option A, published.\n- 2 views: Active contracts, Contracts expiring within 90 days.\n- Solution check: 14/14 components present.\n- E2E test contracts A to E checked, then deleted.\n\nGap: the default status Draft is not set. To fix in the designer or by a metadata change to approve.\n\nRemaining manual actions:\n- Visual review of the form and views; check that the 90-day view changes over time.\n- User access (security roles, app) to handle in a dedicated ticket.\n\nPull request: not created at this stage.\n\nThe full report is attached to this comment.",
+        "attachment": ".alchemist/runs/CRM-301/report-CRM-301.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-302",
+    "summary": "Add a test lookup on the contact, below the first name",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm"
+    ],
+    "reporter": "Demo user",
+    "description": "On the contact table, create a new lookup field named test in French and testo in English, pointing to the account table. Add it to the form below firstname.",
+    "acceptanceCriteria": "- The field is a lookup to account.\n- Labels are present in French and English.\n- The field is right below the first name on the form."
+  },
+  {
+    "key": "CRM-303",
+    "summary": "Add the customer segment on the account",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm"
+    ],
+    "reporter": "Sales management",
+    "description": "Add a Segment client (customer segment) field on the account with the values PME, ETI and Grand compte. It must be visible on the Account form and in the active accounts view.",
+    "acceptanceCriteria": "- The field offers the three values.\n- It is visible on the Account form.\n- It is visible in the active accounts view."
+  },
+  {
+    "key": "CRM-304",
+    "summary": "Legal representative check button on the account",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Low",
+    "labels": [
+      "crm",
+      "ribbon"
+    ],
+    "reporter": "Compliance team",
+    "description": "Add a Vérifier le représentant (check representative) button on the account form. It shows the name of the legal representative, and is only enabled when the Legal Rep field is filled in. The action and the enable rule must be in JavaScript.",
+    "acceptanceCriteria": "- The button is disabled when Legal Rep is empty.\n- The button becomes enabled as soon as the field is filled in.\n- The button shows the representative's name.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T11:16:20.5745433Z",
+        "body": "Dataverse Alchemist report for CRM-304.\n\nThe account form has a new ribbon button \"Verifier le representant\" (rhz.account.Form.LegalRep.Button). It is enabled only when Legal Rep is filled and shows the representative's name. The web resource rhz_/js/account.ribbon.js was updated and published, and the account ribbon was re-imported with the 9 existing controls preserved. Both components are in the Alchemist solution (2/2).\n\nUnit tests are not required on this project, so they were not run. The form behaviour (greyed state, live refresh, dialog) still needs a manual check on a test account.\n\nNothing is committed or pushed yet, and the repository has no origin remote, so no pull request was created. The branch is feature/CRM-304-bouton-de-verification-du-representant-legal (base: main).\n\nThe full report is attached (report-CRM-304.html).",
+        "attachment": ".alchemist/runs/CRM-304/report-CRM-304.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-305",
+    "summary": "Add priority and channel to the active requests view",
+    "issueType": "Task",
+    "status": "In Progress",
+    "statusCategory": "indeterminate",
+    "priority": "Medium",
+    "labels": [
+      "crm"
+    ],
+    "reporter": "Service team",
+    "description": "In the Active Service Requests view of the Service Request table, add the Priority and Channel columns, and sort by priority.",
+    "acceptanceCriteria": "- Both columns are in the view.\n- The view is sorted by priority.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T11:52:58.5692039Z",
+        "body": "CRM-305 - Dataverse Alchemist report\n\nOverall status: warning (delivered with reservations).\n\nDelivered:\n- View \"Active Service Requests\" (rhz_servicerequest): Channel (rhz_channel) added after Priority, sort on rhz_priority descending instead of rhz_duedate. Filter statecode = 0 unchanged.\n- The view was added to the Alchemist solution. Table rhz_servicerequest published.\n- Structural checks pass (layoutxml, fetchxml, solution: 2/2 components).\n\nRemaining:\n- The sort could not be observed on data: no active request in the environment. Check with the displayed labels in the interface that descending order puts the expected priority first.\n- Push and pull request not done: no git remote configured. Branch: feature/CRM-305-ajouter-la-priorite-et-le-canal-a-la-vue (base main).\n- Observation outside the ticket, not done: sorting by choice value follows the numeric order of the options, not the label order.\n\nThe full report is attached to this ticket.",
+        "attachment": ".alchemist/runs/CRM-305/report-CRM-305.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-306",
+    "summary": "Create the Legal Rep field on the account",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "High",
+    "labels": [
+      "crm"
+    ],
+    "reporter": "Compliance team",
+    "description": "Create a lookup to contact on the account, named legal rep in English and representant legal in French, below Ticker Symbol."
+  },
+  {
+    "key": "CRM-307",
+    "summary": "Create the Service Request table and its form",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm"
+    ],
+    "reporter": "Service team",
+    "description": "Create a table with its fields, form and views, with a mockup to approve."
+  },
+  {
+    "key": "CRM-308",
+    "summary": "Add customer follow-up on the contact",
+    "issueType": "Story",
+    "labels": [
+      "crm",
+      "data-model"
+    ],
+    "description": "On the contact, add a global choice Niveau de service (Bronze, Argent, Or), reusable by other tables, and the following fields: Date de dernière revue (date only), Score de satisfaction (whole number from 0 to 10), Budget annuel (currency), Consentement marketing (yes or no) and Notes internes (long text).\n\nAcceptance criteria:\n- The global choice exists and the Niveau de service field uses it.\n- The five other fields exist with the right type.\n- All fields are visible on the contact Information form, in a new Suivi client section of the General tab, in the order of this request.",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "reporter": "Service team"
+  },
+  {
+    "key": "CRM-309",
+    "summary": "Credit limit alert on the account",
+    "issueType": "Story",
+    "labels": [
+      "crm",
+      "javascript"
+    ],
+    "description": "On the account Information form, show a warning notification above the form when Credit Limit exceeds 100,000. It disappears when the value drops back below that threshold. The check runs when the form opens and when the field changes, in JavaScript in a dedicated web resource.",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "reporter": "Service team",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T11:25:13.8010855Z",
+        "body": "Dataverse Alchemist report - CRM-309 (Credit limit alert on the account form)\n\nOverall status: delivered, manual check pending.\n\nWhat was delivered (solution Alchemist, publisher rohzot, prefix rhz_):\n- Web resource rhz_/js/account.information.js: published, added to the solution, content checked against the local file.\n- Account form Information: library and handlers added (OnLoad, OnChange on Credit Limit), published, added to the solution.\n- Solution check: 3/3 components present.\n\nNot verified automatically: the warning display. A manual check is required (listed in the attached report).\n\nSkipped: unit tests (not required by the configuration), documentation (docs.enabled is false), push and pull request (not selected).\n\nFull report attached: report-CRM-309.html",
+        "attachment": ".alchemist/runs/CRM-309/report-CRM-309.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-310",
+    "summary": "Normalize the account number on save",
+    "issueType": "Story",
+    "labels": [
+      "crm",
+      "plugin"
+    ],
+    "description": "On account create and update, the Account Number must be stored in uppercase and without spaces, whatever the input channel. The rule is enforced by a server-side plugin. There is no plugin project in this repository yet.\n\nAcceptance criteria:\n- An account created with the number ab 12 is stored as AB12.\n- Changing the number applies the same rule.\n- The plugin does not run if the number is not changed.",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "reporter": "Service team",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T11:34:55.1883828Z",
+        "body": "Delivery report for CRM-310 (Dataverse Alchemist).\n\nOverall status: partially delivered.\n- Done: account number normalisation plugin written (uppercase, whitespace removed, on Create and Update of account). Code committed in d695311, branch feature/CRM-310-normaliser-le-numero-de-compte-a-l-enreg, based on main.\n- Pending / manual: registration of assembly Alchemist.Plugins and of the Create and Update steps in solution Alchemist (environment dev). E2E tests not run yet (cases in test-report.md).\n- Not done: no push, no pull request opened.\n\nRemaining manual actions:\n1. Register the assembly and the two steps (PreOperation, synchronous) on account.\n2. Run the E2E cases with the Plugin Trace Log at level All.\n3. Push the branch and open the pull request to main.\n\nFull report attached (report-CRM-310.html).",
+        "attachment": ".alchemist/runs/CRM-310/report-CRM-310.html"
+      },
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T12:02:34.5555875Z",
+        "body": "Dataverse Alchemist: CRM-310 is implemented on branch feature/CRM-310-normaliser-le-numero-de-compte-a-l-enreg (not pushed, no pull request yet).\n\n- Plugin AccountNumberNormalizationPlugin (assembly Alchemist.Plugins) registered on account: Create and Update (PreOperation, synchronous). Update filters on accountnumber.\n- Normalisation: uppercase and no spaces. A value made only of spaces is stored as null. Existing accounts are not processed.\n- E2E on dev, Web API: scenarios 2, 4, 5, 6 and 7 validated. Test accounts are deleted.\n- To check by hand: scenarios 1 and 3 (interface) and scenario 8 (no Plugin Trace Log entry when accountnumber is not changed).\n\nThe full report is attached (report-CRM-310.html).",
+        "attachment": ".alchemist/runs/CRM-310/report-CRM-310.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-311",
+    "summary": "Create the Service Client app",
+    "issueType": "Task",
+    "labels": [
+      "crm",
+      "application"
+    ],
+    "description": "Create a model-driven app Service Client giving access to the Account, Contact and Service Request tables, with a sitemap grouping these tables in a Service area.",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "reporter": "Service team",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T11:47:37.5883119Z",
+        "body": "CRM-311 - Service Client application created (Dataverse Alchemist).\n\nOverall status: done on the Dataverse side, with manual actions left.\n\nDelivered in solution Alchemist (publisher rohzot, prefix rhz):\n- Model-driven app rhz_ServiceClient (Service Client), Unified Interface, site map with a Service area containing Account, Contact and Service Request.\n- 14 forms and 24 views added (all forms and views of the three tables, as accepted by the board).\n- API checks passed: app present, clientType 4, 3/3 tables, 2/2 components in the solution.\n\nNot done by the agent:\n- E2E UI check (open the app, Service area, forms and views).\n- Security role association (left to the administrator; appmoduleroles returned HTTP 404 on read).\n- No pull request: push and PR were not selected at closure. Branch: feature/CRM-311-creer-l-application-service-client (base main).\n\nFull report attached (report-CRM-311.html).",
+        "attachment": ".alchemist/runs/CRM-311/report-CRM-311.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-312",
+    "summary": "Add billing information on the account",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "Accounting wants its information on the account record. Add: IBAN (text, 34 characters), Délai de paiement in days (whole number from 0 to 120), Taux de remise as a percentage (decimal from 0 to 100, two decimals), Portail de facturation (URL) and Client stratégique (yes or no, no by default).",
+    "acceptanceCriteria": "- The five fields exist with the right type and limits.\n- They appear on the account main form, in a new Facturation section."
+  },
+  {
+    "key": "CRM-313",
+    "summary": "Add contact preferences on the contact",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "Add on the contact: Canaux préférés (multi-select choice: Email, Téléphone, SMS, Courrier) and Dernier appel (date and time).",
+    "acceptanceCriteria": "- Several channels can be chosen at once.\n- Both fields are visible on the contact Information form.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T13:22:26.9112377Z",
+        "body": "CRM-313: processing report (Dataverse Alchemist)\n\nOverall status: delivered in the Alchemist solution, end-to-end tests not run.\n\n- Global choice rhz_canauxcontact (4 values), columns contact.rhz_canauxpreferes (multi-select, optional) and contact.rhz_dernierappel (date and time, UserLocal, optional).\n- Section rhz_preferencescontact added in the Preferences tab of the contact Information form, after Contact Methods.\n- 5/5 components present in the Alchemist solution.\n- Not done: end-to-end tests (a test contact has to be created), push and pull request (no remote repository configured).\n\nRemaining actions:\n- Run the end-to-end tests on a dedicated test contact, then delete it.\n- Create the remote repository, push branch feature/CRM-313-ajouter-les-preferences-de-contact-sur-l and open the pull request into main.\n\nThe detailed report is attached to this comment.",
+        "attachment": ".alchemist/runs/CRM-313/report-CRM-313.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-314",
+    "summary": "Link service requests to an account and a service level",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "High",
+    "labels": [
+      "crm",
+      "fields",
+      "relationship"
+    ],
+    "reporter": "Service team",
+    "description": "On the Service Request table, add: Compte concerné (lookup to account), Niveau de service and Date d'échéance (date only). The service level must reuse the global choice already created for the contact, without creating a new one.",
+    "acceptanceCriteria": "- A service request can be linked to an account.\n- The Niveau de service field uses the existing global choice.\n- The account sees its related service requests.\n- The three fields are on the service request form."
+  },
+  {
+    "key": "CRM-315",
+    "summary": "Create the view of contacts who accepted marketing",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "view"
+    ],
+    "reporter": "Service team",
+    "description": "Marketing wants a public view on the contact listing active contacts who gave their marketing consent.",
+    "acceptanceCriteria": "- The view is named Contacts avec consentement marketing.\n- It shows the name, email, service level and last review date.\n- It is sorted by name.\n- Only active contacts with consent set to Yes appear."
+  },
+  {
+    "key": "CRM-316",
+    "summary": "Create the view of high-value Gold contracts",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Low",
+    "labels": [
+      "crm",
+      "view"
+    ],
+    "reporter": "Service team",
+    "description": "On the service contract, create a view of Gold contracts whose annual amount exceeds 10,000, largest first.",
+    "acceptanceCriteria": "- The view is named Contrats Gold à fort montant.\n- It shows the account, annual amount, end date and status.\n- Only Gold contracts above 10,000 appear, sorted by descending amount."
+  },
+  {
+    "key": "CRM-317",
+    "summary": "Create the quick create form of the service contract",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "form"
+    ],
+    "reporter": "Service team",
+    "description": "Salespeople want to create a service contract without leaving their screen. Create a quick create form with, in this order: the account, the contract type, the start date, the end date and the annual amount.",
+    "acceptanceCriteria": "- The quick create form exists and opens from the command bar.\n- It contains the five fields, in the requested order.\n- The contract created appears in the existing views.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T19:35:05.1985076Z",
+        "body": "Dataverse Alchemist report for CRM-317.\n\nOverall status: partially delivered.\n\nDelivered: quick create form \"Création rapide\" on rhz_contratservice, in the Alchemist solution (publisher rohzot, prefix rhz_). It contains the five existing fields in order: Account, Contract type, Start date, End date, Annual amount. The form is published, and the table and the form are both in the solution (2/2 components).\n\nNot done:\n- E2E tests (opening from the create menu, field order, visibility of a created contract in the views): not run.\n- Visual check against the mockup: not done.\n- Push and pull request: not requested at closure. No pull request.\n\nManual actions left:\n- Check the display name \"Création rapide\" in the Dataverse interface (encoding issue seen in the console).\n- Check that the quick create opens from the app's create menu.\n- Observation outside the ticket: Contract name (rhz_name) is in no create form. To handle in a dedicated ticket if needed.\n\nThe full report is attached to this ticket (report-CRM-317.html).",
+        "attachment": ".alchemist/runs/CRM-317/report-CRM-317.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-318",
+    "summary": "Create a Vue commerciale (sales view) form on the contact",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "form",
+      "mockup"
+    ],
+    "reporter": "Service team",
+    "description": "Salespeople find the contact form too crowded. Create a second main form, named Vue commerciale, focused on the contact's identity, contact details and customer follow-up. No mockup is provided: propose a layout.",
+    "acceptanceCriteria": "- The Vue commerciale form exists without replacing the current form.\n- It shows the identity, contact details and customer follow-up fields.\n- The layout is approved on a mockup before creation.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T20:14:24.9736546Z",
+        "body": "CRM-318 - Dataverse Alchemist report\n\nStatus: done, with items left for a human.\n\nThe \"Vue commerciale\" main form is created and published on the contact table, in the Alchemist solution (publisher rohzot, prefix rhz_). It uses layout A and places 20 existing fields. No column was created. The \"Information\" form is unchanged.\n\nNot done by the agent:\n- Attach the \"Vue commerciale\" form to an application, so users can see it.\n- Visual check of the form in the form editor.\n- Push of the branch and pull request (not requested in this closure).\n\nThe full report is attached to this ticket (report-CRM-318.html).",
+        "attachment": ".alchemist/runs/CRM-318/report-CRM-318.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-319",
+    "summary": "Reorganize the service request form into two tabs",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "form"
+    ],
+    "reporter": "Service team",
+    "description": "On the service request Information form, split the content into two tabs: Général, with the request information, and Suivi, with the priority, channel and dates. The order of existing fields in each tab is kept.",
+    "acceptanceCriteria": "- The form has the two tabs Général and Suivi.\n- No field has disappeared from the form.\n- The form remains the default form."
+  },
+  {
+    "key": "CRM-320",
+    "summary": "Create the Équipement (equipment) table",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "High",
+    "labels": [
+      "crm",
+      "table"
+    ],
+    "reporter": "Service team",
+    "description": "We want to track the hardware installed at our customers' sites. Create an Équipement table with: the name, the serial number (text, unique for the team), the customer account, the purchase date, the warranty end and the state (En service, En panne, Retiré).\n\nThe order of fields on the form is that of this list.",
+    "acceptanceCriteria": "- The table exists in the Alchemist solution.\n- A form shows every field.\n- A view Équipements en service lists equipment in that state.\n- A view Garanties à échéance lists those whose warranty ends within 60 days."
+  },
+  {
+    "key": "CRM-321",
+    "summary": "Create the Intervention table and add it to the Service Client app",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "table",
+      "application"
+    ],
+    "reporter": "Service team",
+    "description": "After the Équipement table (CRM-320), track technical interventions: the title, the equipment, the on-site contact, the planned date, the duration in minutes, the status (Planifiée, En cours, Terminée, Annulée) and the report (long text).",
+    "acceptanceCriteria": "- The table exists, linked to the equipment and the contact.\n- An equipment record shows its interventions.\n- A view Interventions planifiées is sorted by planned date.\n- The table is available in the Service Client app."
+  },
+  {
+    "key": "CRM-322",
+    "summary": "Add the mobile number on the contact",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Low",
+    "labels": [
+      "crm",
+      "fields",
+      "duplicate"
+    ],
+    "reporter": "Service team",
+    "description": "Teams want to enter the contact's mobile phone number and see it on its form.",
+    "acceptanceCriteria": "- The mobile number can be entered on the contact.\n- It is visible on the Information form."
+  },
+  {
+    "key": "CRM-323",
+    "summary": "Manage suppliers in the CRM",
+    "issueType": "Story",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "table",
+      "ambiguous"
+    ],
+    "reporter": "Service team",
+    "description": "We should be able to manage our suppliers in the CRM.",
+    "acceptanceCriteria": ""
+  },
+  {
+    "key": "CRM-324",
+    "summary": "Test the Canaux préférés field (multi-select choice)",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "The contact's Canaux préférés field (rhz_canauxpreferes) exists. Check through the Web API that it works, without changing its definition.",
+    "acceptanceCriteria": "- A test contact receives two channels in one write.\n- Reading it back returns those two values.\n- A search by channel finds the contact.\n- The test contact is deleted.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T22:39:33.3327539Z",
+        "body": "CRM-324 - Test of the Canaux préférés field: done (all acceptance criteria met on dev).\n\n- Overall status: done for the recette. No Dataverse component created or modified, nothing added to the Alchemist solution, no code change.\n- Criteria 1 to 4 OK: two channels (Email, SMS) written in one request, read back correctly, found by ContainValues search on 911240002, test contact deleted (404 on re-read).\n- Pull request: not requested (no commit on branch feature/CRM-324-recette-du-champ-canaux-preferes-choix-m).\n- Remaining manual actions: none for the agent. Out-of-scope suggestion (not done): the branch name generated by the planning script is truncated.\n\nFull report attached: report-CRM-324.html",
+        "attachment": ".alchemist/runs/CRM-324/report-CRM-324.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-325",
+    "summary": "Add a photo and an attachment to the service contract",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "On the service contract, add: Photo du site (image, 10 MB, full image kept) and Contrat signé (file, 32 MB).",
+    "acceptanceCriteria": "- Both columns exist with the right type and maximum size.\n- They are in the Alchemist solution.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T19:50:56.4390942Z",
+        "body": "CRM-325 - Dataverse Alchemist report\n\nOverall status: delivered with one accepted deviation.\n\nDelivered in the Alchemist solution (publisher rohzot, prefix rhz), on rhz_contratservice:\n- Column 'Site photo' (rhz_photodusite): Image, 10 MB. CanStoreFullImage is false, not true as planned. The board accepted this deviation.\n- Column 'Signed contract' (rhz_contratsigne): File, 32 MB. Requirement level None.\n\nChecks: both columns are present in the solution (3/3 components). Metadata matches the plan, except CanStoreFullImage above.\n\nNot done (not requested by the ticket): placement on the 'Information' form, field-level security, documentation. Branch and pull request were not pushed or created in this closure.\n\nRemaining manual actions:\n- Decide whether 'Site photo' needs full-size storage (CanStoreFullImage).\n- Place the columns on the form if needed.\n\nThe full report is attached to this ticket (report-CRM-325.html).",
+        "attachment": ".alchemist/runs/CRM-325/report-CRM-325.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-326",
+    "summary": "Add the beneficiary of the service contract",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "fields",
+      "relationship"
+    ],
+    "reporter": "Service team",
+    "description": "On the service contract, add a Bénéficiaire field that can point to either an account or a contact (customer lookup).",
+    "acceptanceCriteria": "- The column accepts an account or a contact.\n- A test contract linked to an account then to a contact reads back correctly, then is deleted."
+  },
+  {
+    "key": "CRM-327",
+    "summary": "Complete the service contract with the other field types",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "On the service contract, add: Coefficient d'indexation (decimal from 0 to 10, 3 decimals), Score de risque (floating point number from 0 to 100), Référence comptable (big integer), Numéro de contrat (auto-number with format CTR-{SEQNUM:5}), E-mail de facturation (email format), Site du client (URL format) and Téléphone de facturation (phone format).",
+    "acceptanceCriteria": "- The seven columns exist with the right type and format.\n- A test contract gets an auto-number in the right format, then is deleted.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T20:07:45.9138064Z",
+        "body": "CRM-327 - Seven columns created on Service contract (rhz_contratservice), solution Alchemist.\n\nStatus: delivered, with the end-to-end test still to run.\n- Coefficient d'indexation, Score de risque, Reference comptable, Numero de contrat (automatic CTR-{SEQNUM:5}), E-mail de facturation, Site du client, Telephone de facturation.\n- Metadata verified; 8/8 components in the solution.\n- No form or view modified.\n\nNot done yet:\n- E2E test on a test contract (automatic number check): not run, test data not approved.\n- Adding the columns to a form or view: not in this ticket.\n- No push or pull request at this closure.\n\nFull report attached (report-CRM-327.html).",
+        "attachment": ".alchemist/runs/CRM-327/report-CRM-327.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-328",
+    "summary": "Set Brouillon (draft) as the default contract status",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "fields"
+    ],
+    "reporter": "Service team",
+    "description": "The contract status (rhz_statutcontrat) must default to Brouillon on creation.",
+    "acceptanceCriteria": "- The default value of the field is Brouillon.\n- The change is published.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T19:40:24.0624451Z",
+        "body": "CRM-328 – Default status Draft on service contracts: done.\n\n- The default value of rhz_statutcontrat (rhz_contratservice) is now Draft (911240000) at creation.\n- The table rhz_contratservice is published.\n- E2E test: a contract created without a status received Draft; the test record was deleted.\n- No form or view was changed. Solution check: 1/1 component in solution Alchemist.\n- Branch: feature/CRM-328-poser-brouillon-comme-statut-par-defaut (based on main). No pull request created at closure.\n\nRemaining manual points:\n- Check imports and integrations that create contracts without a status: they will now receive Draft.\n- Observation outside the ticket, not done: option labels of rhz_statutcontrat are in English while the base language is French. Suggested for a separate ticket.\n\nFull report attached.",
+        "attachment": ".alchemist/runs/CRM-328/report-CRM-328.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-329",
+    "summary": "Trace account number changes",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "plugin"
+    ],
+    "reporter": "Service team",
+    "description": "Extend the Alchemist.Plugins plugin project, whose code is on branch feature/CRM-310-normaliser-le-numero-de-compte-a-l-enreg. Add a plugin that writes the old and new value of the account number to the trace log, on an Update step of account, PostOperation, asynchronous, with a pre-image limited to accountnumber.",
+    "acceptanceCriteria": "- The existing assembly is updated, without creating a second one.\n- The new step is asynchronous and filtered on accountnumber.\n- The pre-image exists.\n- The normalization plugin still works.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-02T11:56:57.7339509Z",
+        "body": "CRM-329 - Trace of account number changes: partially delivered, verification pending.\n\nOverall status: lot A applied, recovery pending.\n- Assembly Alchemist.Plugins updated to 1.0.1.0 (same id, no second assembly), solution Alchemist.\n- Step \"Update of account\" created: Async, PostOperation, filter accountnumber, PreImage with accountnumber.\n- Test account updated (accountnumber crm329-test 002), value read back and conform.\n\nNot yet verified: the async system job is still \"Waiting For Resources\", so the trace (old and new value) is not read yet. Negative filter test and deletion of the test account are pending.\n\nBranch: feature/CRM-329-tracer-les-changements-de-numero-de-comp (based on feature/CRM-310-normaliser-le-numero-de-compte-a-l-enreg). No pull request created at closure.\n\nManual actions remaining: check the async job, read plugintracelogs, run the negative test, delete the test account, decide on push and PR.\n\nThe full report is attached.",
+        "attachment": ".alchemist/runs/CRM-329/report-CRM-329.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-330",
+    "summary": "Test plugin to remove afterwards",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "plugin",
+      "rollback"
+    ],
+    "reporter": "Service team",
+    "description": "Create a small plugin project Alchemist.TestRollback with a plugin that writes a trace when a task is created, on a synchronous PostOperation Create step. This ticket is used to check the rollback.",
+    "acceptanceCriteria": "- The assembly and its step exist in the solution."
+  },
+  {
+    "key": "CRM-331",
+    "summary": "Test app to remove afterwards",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "application",
+      "rollback"
+    ],
+    "reporter": "Service team",
+    "description": "Create a Test Rollback app (unique name rhz_TestRollback) with a single area giving access to accounts. This ticket is used to check the rollback.",
+    "acceptanceCriteria": "- The app exists, with its navigation, and it is valid."
+  },
+  {
+    "key": "CRM-332",
+    "summary": "Open the service contract in the Service Client app",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "application"
+    ],
+    "reporter": "Service team",
+    "description": "Add the Contrat de service table to the existing Service Client app, in a Contrats group, and give the System Customizer role access to the app.",
+    "acceptanceCriteria": "- The table appears in the app navigation.\n- The System Customizer role is linked to the app.\n- The app remains valid.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T20:25:20.7252389Z",
+        "body": "CRM-332 — Contrat de service added to the Service Client app.\n\nStatus: delivered, with 2 items remaining.\n- The table Contrat de service (rhz_contratservice) is in the Service Client app, in a new \"Contrats\" group after \"Service\", with 2 forms and 4 views. The sub-area shows \"Service contracts\" (script limitation); French labels will appear once the French language pack is installed.\n- The System Customizer role was already associated with the app: no change.\n- No pull request was requested. Branch: feature/CRM-332-ouvrir-le-contrat-de-service-dans-l-appl (base main).\n\nRemaining manual actions:\n- Check in the app that the group and sub-area open the Information form.\n- Install the French language pack.\n\nThe full report is attached.",
+        "attachment": ".alchemist/runs/CRM-332/report-CRM-332.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-333",
+    "summary": "Add the Active Accounts view to the solution",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "solution"
+    ],
+    "reporter": "Service team",
+    "description": "The Active Accounts system view of the account is not in the Alchemist solution. Add it using the solution check, without changing the view.",
+    "acceptanceCriteria": "- The view is in the Alchemist solution.\n- Its definition is unchanged.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T22:44:08.0369179Z",
+        "body": "CRM-333: the Active Accounts system view (account) is now part of the Alchemist solution (publisher rohzot, prefix rhz_).\n\nOverall status: delivered with one open check.\n- The view was added with AddSolutionComponent (HTTP 200). Its definition was not changed.\n- Presence in the solution, the six attributes and the missing dependencies were checked against the reference capture: OK.\n- Not verified: the SHA-256 fingerprints of layoutxml and fetchxml were not recomputed.\n- No code produced, no commit. No remote is configured: no push and no pull request.\n\nRemaining manual actions:\n- Recompute the SHA-256 fingerprints of layoutxml and fetchxml and compare them with the reference.\n- Configure a remote, then push feature/CRM-333-rattacher-la-vue-active-accounts-a-la-so and open the PR if wanted.\n- Before importing the solution into a shared environment, compare its Active Accounts view: the import replaces it.\n\nFull report attached: report-CRM-333.html.",
+        "attachment": ".alchemist/runs/CRM-333/report-CRM-333.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-334",
+    "summary": "Add the account internal code",
+    "issueType": "Task",
+    "status": "To Do",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "tool-testing",
+      "learning"
+    ],
+    "reporter": "Service team",
+    "description": "Add a Code interne field on the account (text, 20 characters).",
+    "acceptanceCriteria": "- The field exists.\n- The lesson given during approval is retained by the agent.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-01T20:46:33.7270665Z",
+        "body": "CRM-334 - Code interne on account: delivery report\n\nStatus: delivered, with 2 open points.\n\n- Column account.rhz_codeinterne (\"Code interne\", text, 20 characters max, optional) created and published in solution Alchemist.\n- Field added to the Account main form, after Legal Rep (Summary > ACCOUNT INFORMATION).\n- E2E tests: 20 characters accepted, 21 characters rejected (HTTP 400), test account deleted.\n\nOpen points:\n- The board lesson was not found in the alchemist-learning memory: to verify.\n- Branch feature/CRM-334-ajouter-le-code-interne-du-compte is local only: push and pull request not done at closure.\n\nThe full report is attached (report-CRM-334.html).",
+        "attachment": ".alchemist/runs/CRM-334/report-CRM-334.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-401",
+    "summary": "Version the Alchemist solution (export + pac unpack)",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "tooling"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Previous tickets could not unpack the solution: pac was not found (only installed through the VS Code extension, outside PATH). Export the Alchemist solution and unpack it with pac.",
+    "acceptanceCriteria": "- The Alchemist solution is exported.\n- It is unpacked with pac into a source folder.\n- The config check no longer reports pac as not found.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.347504Z",
+        "body": "Delivered. Alchemist solution exported and unpacked with pac (79 files). Fix: new Get-PacCliPath function, which finds pac outside PATH (VS Code extension, dotnet tool); used by the export and the config check, which now shows pac as found. Versioning the solution in the repository (sourceControlled) is not turned on: that is your decision.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-402",
+    "summary": "Store the site photo at full size",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "data-model"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "The Image column rhz_photodusite of the service contract was created without full-size storage (CRM-325), because the script did not handle CanStoreFullImage.",
+    "acceptanceCriteria": "- rhz_photodusite stores the image at full size (CanStoreFullImage = true).\n- The column creation script can set this option.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3511167Z",
+        "body": "Delivered. rhz_photodusite: CanStoreFullImage changed from false to true, then read back. Fix: the creation script now writes this option with a PUT on the untyped path with @odata.type, the form verified here.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-403",
+    "summary": "French title of the Contrats entry in the Service Client app",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "application"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "In the Service Client app, the service contract subarea shows as 'Service contracts' because the script does not allow a custom title (CRM-332).",
+    "acceptanceCriteria": "- The service contract subarea is named 'Contrats de service'.\n- The script that adds a table to an app accepts a title.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.351201Z",
+        "body": "Delivered. The subarea is named 'Contrats de service' (Title attribute + Titles element), and the app is published. New -SubAreaTitles parameter on Add-DataverseAppTable. Display in the UI not verified.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-404",
+    "summary": "Read and link the security roles of the Service Client app",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "application",
+      "security"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Reading the roles of an app returned HTTP 404 (appmoduleroles, CRM-311). Check that we can read and link the roles of an app.",
+    "acceptanceCriteria": "- The roles linked to the Service Client app are read without error.\n- Linking a role is idempotent.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3512471Z",
+        "body": "Delivered. Reading the app roles works (the 404 came from the old read, already fixed with $expand). Role 'Gestionnaire de contrats' linked to Service Client; a second run adds nothing (idempotence verified).",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-405",
+    "summary": "Check the trace of the asynchronous account number plugin",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "plugin",
+      "testing"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "The CRM-329 run could not read the trace: the asynchronous job was waiting. Check the trace (old and new value), the negative filter, and delete the test account.",
+    "acceptanceCriteria": "- The trace of the account number change is read.\n- Updating another field produces no trace.\n- The test account is deleted.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3512806Z",
+        "body": "Delivered. Cause of the CRM-329 blocker: the organization trace log was Off. Switched to All on dev. Trace read: 'ancienne valeur crm405 a, nouvelle valeur crm405 b'. A phone update produces no trace (filter verified). Test account deleted.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-406",
+    "summary": "Read the plugin trace log",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "plugin",
+      "testing"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Scenario 8 of CRM-310 (check through the trace log) was not done. Check the logging setting and read the traces of a plugin.",
+    "acceptanceCriteria": "- The organization trace log level is known.\n- The traces of the normalization plugin are read after a test update.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.351312Z",
+        "body": "Partial. The log level is known (was Off, now All) and reading traces works (see CRM-405). Blocked: the two steps of the normalization plugin have been disabled since Nov 1 at 20:36, with no trace in the agent journals. I did not re-enable them: your call.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      },
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T18:32:46.0862516Z",
+        "body": "Unblocked and delivered. The normalization steps had not been disabled by you but by the agent: each solution import (app creation CRM-331 on Nov 1 at 20:36 UTC, adding a table to the app in CRM-412 today at 18:03 UTC) disabled the plugin steps. Fix: the state of steps and processes is captured before each import and restored afterwards. Steps re-enabled. End-to-end: 'ab 12 c' becomes AB12C on create, ' x y 9 ' becomes XY9 on update, and the traces 'Numéro de compte normalisé.' are read.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-tickets-complexes.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-407",
+    "summary": "Make the account internal code unique (alternate key)",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "data-model",
+      "new-skill"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "The internal code (rhz_codeinterne) must be unique. Create an alternate key on the account. The agent has no skill for alternate keys yet.",
+    "acceptanceCriteria": "- An alternate key on account.rhz_codeinterne exists in the Alchemist solution.\n- Two accounts cannot have the same internal code.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3513382Z",
+        "body": "Delivered. Alternate key rhz_codeinternekey on account.rhz_codeinterne, index Active, in the solution. End-to-end: a second account with the same code is refused (HTTP 412). New skill: New-DataverseAlternateKey.ps1 and the dataverse-alternate-key skill.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-408",
+    "summary": "Calculate the contract duration in days",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "data-model",
+      "new-skill"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Add a calculated column Durée (jours) on the service contract: difference between end date and start date. The agent cannot create a calculated column yet.",
+    "acceptanceCriteria": "- The calculated column rhz_dureejours exists in the solution.\n- A contract from Jan 1 to Jan 31 shows 30.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3513864Z",
+        "body": "Delivered. Power Fx formula column rhz_dureejours = DateDiff(rhz_datedebut, rhz_datefin, TimeUnit.Days), in the solution. End-to-end: a contract from Jan 1 to Jan 31 gives 30. New skill: -Formula parameter on New-DataverseColumn.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-409",
+    "summary": "Create the Gestionnaire de contrats (contract manager) role",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "security",
+      "new-skill"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Create a security role Gestionnaire de contrats, with read, create and write on the service contract at business unit level. The agent cannot create a role yet.",
+    "acceptanceCriteria": "- The role exists in the Alchemist solution.\n- It has the Read, Create, Write privileges on rhz_contratservice (business unit).",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3514162Z",
+        "body": "Delivered. Role 'Gestionnaire de contrats': Read, Create and Write on rhz_contratservice at business unit level, in the solution. New skill: New-DataverseSecurityRole.ps1 and the dataverse-security-role skill; the rollback can delete a role.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-410",
+    "summary": "Make the end date required for an active contract (business rule)",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "business-rule",
+      "new-skill"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Business rule on the service contract: if the status is Actif, the end date is required. The agent cannot create a business rule yet.",
+    "acceptanceCriteria": "- An active business rule exists on rhz_contratservice.\n- It makes rhz_datefin required when the status is Actif.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3514504Z",
+        "body": "Delivered, with a limit. Business rule 'Date de fin obligatoire si actif' is active; the generated client code tests 911240001 and calls setRequiredLevel('required'). Limit: the ELSE branch is refused by the server (HTTP 500 waitStep), so rhz_datefin does not become optional again automatically. New skill: New-DataverseBusinessRule.ps1 and the dataverse-business-rule skill.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-411",
+    "summary": "Automated UI tests (Playwright)",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "new",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "self-diagnosis",
+      "testing",
+      "tooling"
+    ],
+    "reporter": "Dataverse Alchemist",
+    "description": "Form behaviors (ribbon button, credit limit notification) have never been checked automatically in the UI.",
+    "acceptanceCriteria": "- A UI test opens an account form and checks the credit limit notification.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T17:33:20.3514845Z",
+        "body": "Not done. Playwright is not installed, and a UI test needs a signed-in Dynamics session (MFA), impossible without you. Prerequisites: npm i -D playwright, then a manual sign-in to save a browser profile.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-auto-diagnostic.html"
+      },
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T23:02:36.7511861+01:00",
+        "body": "Playwright browser tests delivered: generation (New-AlchemistUiTests.ps1), execution (Invoke-AlchemistUiTests.ps1, Edge), results included in the end-of-ticket report. Applied to CRM-412 (7/7), CRM-413 (5/5 + 1 skipped), CRM-414 (4/4), CRM-415 (1 skipped, no UI)."
+      }
+    ]
+  },
+  {
+    "key": "CRM-412",
+    "summary": "Manage equipment covered by a service contract",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "High",
+    "labels": [
+      "crm",
+      "complex",
+      "data-model",
+      "application",
+      "security",
+      "documentation"
+    ],
+    "reporter": "Service team",
+    "description": "We want to track the equipment installed at our customers' sites and covered by a service contract.\n\nCreate an Équipement table with: the name, a unique serial number, the equipment type (Climatisation, Chauffage, Électricité, Plomberie), the commissioning date, the warranty end date, the customer account and the service contract. A 'Sous garantie' (under warranty) flag must be calculated automatically from the warranty end date.\n\nA form is needed, a view of equipment under warranty, access from the Service Client app (Contrats group) and permissions for the Gestionnaire de contrats role (read, create, write). No documentation exists: start it.",
+    "acceptanceCriteria": "- The Équipement table exists in the Alchemist solution with its columns.\n- Two equipment records cannot have the same serial number.\n- 'Sous garantie' is Oui if the warranty end is in the future, Non otherwise.\n- The form shows every field; the 'Équipements sous garantie' view lists them.\n- Equipment is accessible in Service Client, Contrats group.\n- The Gestionnaire de contrats role has Read, Create, Write (business unit) on equipment.\n- The documentation (index, table, feature) is created.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T18:32:46.0901062Z",
+        "body": "Delivered. Équipement table: 7 columns, including 'Sous garantie' as a Power Fx formula (rhz_datefingarantie >= UTCToday()), alternate key on the serial number, Information form, 'Équipements sous garantie' view, 'Équipements' entry in Service Client (Contrats group), Read/Create/Write (business unit) for Gestionnaire de contrats. Solution: 14/14. End-to-end: under warranty Oui/Non correct, duplicate refused (HTTP 412), the view only lists the equipment under warranty. Documentation started in docs/ (index, 4 tables, feature pages).",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-tickets-complexes.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-413",
+    "summary": "Track interventions on equipment",
+    "issueType": "Story",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "High",
+    "labels": [
+      "crm",
+      "complex",
+      "data-model",
+      "plugin",
+      "business-rule",
+      "documentation"
+    ],
+    "reporter": "Service team",
+    "description": "Technicians work on equipment. Create an Intervention table: equipment, intervention date, status (Planifiée, Réalisée, Annulée; Planifiée by default), duration in hours, technician (user) and report.\n\nRules:\n- when an intervention becomes Réalisée (done), the equipment's last intervention date is updated with the intervention date (new column on equipment), without ever moving backwards;\n- the report is required as soon as the intervention is Réalisée;\n- a Réalisée intervention must have a positive duration, otherwise saving is refused with a clear message.",
+    "acceptanceCriteria": "- The Intervention table and the Date de dernière intervention column exist in the solution.\n- Status Planifiée by default.\n- Setting an intervention to Réalisée updates the equipment; an older intervention does not move the date backwards.\n- A Réalisée intervention without a positive duration is refused with a business message.\n- The report is required on the form when the status is Réalisée.\n- Plugin unit tests and end-to-end tests pass; documentation updated.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T18:32:46.0902108Z",
+        "body": "Delivered. Intervention table (6 columns, status Planifiée by default), Dernière intervention column on equipment, InterventionCompletionPlugin (PreOperation Create/Update, pre-image), business rule on the report, form. Unit tests: 9/9. End-to-end: 7/7 (default, refusal without duration, date update, no moving back, switch to Réalisée by update, duration 0 refused through the pre-image, cancelled without effect). Solution: 16/16. Documentation updated.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-tickets-complexes.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-414",
+    "summary": "Check the consistency of the service contract dates",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "complex",
+      "webresource",
+      "documentation"
+    ],
+    "reporter": "Service team",
+    "description": "On the service contract form, if the end date is before the start date, show an error on the end date and prevent saving. The error disappears as soon as the dates are consistent again.",
+    "acceptanceCriteria": "- Web resource deployed, published and wired on the Information form (OnLoad, OnChange of both dates, OnSave).\n- Unit tests of the comparison logic pass.\n- The check is also described in the service contract documentation.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T18:32:46.0902729Z",
+        "body": "Delivered. Web resource rhz_/js/rhz_contratservice.information.js, published and verified, wired on the Information form (onload, onsave, onchange of both dates; read back after re-export). Unit tests: 6/6. Side fix: the 11 existing tests of CRM-304 and CRM-309 were failing because of the test harness; they all pass (17/17). Documentation: Form scripts section and business note. On-screen behavior not verified automatically.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-tickets-complexes.html"
+      }
+    ]
+  },
+  {
+    "key": "CRM-415",
+    "summary": "Import equipment from the supplier file",
+    "issueType": "Task",
+    "status": "Done",
+    "statusCategory": "done",
+    "priority": "Medium",
+    "labels": [
+      "crm",
+      "complex",
+      "integration",
+      "data"
+    ],
+    "reporter": "Service team",
+    "description": "The supplier sends a list of equipment identified by serial number. The import must create missing equipment and update existing records, without duplicates, based on the serial number (upsert on an alternate key). File provided: 3 rows, one of which already exists.",
+    "acceptanceCriteria": "- Missing equipment is created, existing records are updated (no duplicate).\n- The account and the contract are linked by their business identifier.\n- A second run of the same import changes nothing.\n- Test data is deleted after testing.",
+    "comments": [
+      {
+        "author": "Dataverse Alchemist",
+        "created": "2026-11-11T18:32:46.0903265Z",
+        "body": "Delivered. New script Import-DataverseData.ps1 (upsert on an alternate key, lookups by business identifier). Supplier file: 2 creations and 1 update, linked to the account (by rhz_codeinterne) and the contract (by rhz_numerocontrat). Second run: 3 rows unchanged. A file with an invalid value is refused without writing anything. Test data deleted.",
+        "attachment": ".alchemist/runs/AUTO-DIAG-2026-11-11/rapport-tickets-complexes.html"
+      }
+    ]
+  }
+]
