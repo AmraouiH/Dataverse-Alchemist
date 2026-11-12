@@ -1,6 +1,6 @@
 # What Dataverse Alchemist can do
 
-Version 0.2.0. A Claude Code agent made of:
+Version 1.0.0. A Claude Code agent made of:
 - 5 commands;
 - 21 skills;
 - 2 sub-agents: a D365 expert who reviews the plan, and a repository analyst;
