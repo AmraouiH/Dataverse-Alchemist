@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const pkgRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = path.join(pkgRoot, '.claude');
@@ -61,6 +62,13 @@ function init(targetArg) {
         }
     }
 
+    // Local ticket file: the minimal config reads tickets from it (jira.provider = "local")
+    const ticketsPath = path.join(target, '.alchemist', 'tickets.json');
+    if (!fs.existsSync(ticketsPath)) {
+        actions.push('create .alchemist/tickets.json (example tickets, to replace with yours)');
+        if (!dryRun) { fs.copyFileSync(path.join(source, 'dataverse-alchemist', 'config', 'tickets.example.json'), ticketsPath); }
+    }
+
     const ignore = ['.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/'];
     const gitignore = path.join(target, '.gitignore');
     const existing = readLines(gitignore);
@@ -73,6 +81,10 @@ function init(targetArg) {
     console.log(`Dataverse Alchemist ${version} ${dryRun ? '(dry run) ' : ''}-> ${target}`);
     if (dryRun) { actions.forEach((a) => console.log(`  ${a}`)); }
     console.log(`${files.length} files ${dryRun ? 'to copy' : 'copied'}, ${obsolete.length} obsolete ${dryRun ? 'to remove' : 'removed'}.`);
+    const pwsh = spawnSync('pwsh', ['-NoProfile', '-Command', '$PSVersionTable.PSVersion.Major'], { encoding: 'utf8' });
+    if (pwsh.error || Number(pwsh.stdout) < 7) {
+        console.warn('\nWARNING: PowerShell 7+ (pwsh) was not found. The agent scripts need it: https://aka.ms/powershell');
+    }
     if (!dryRun) {
         console.log(`
 Next steps:

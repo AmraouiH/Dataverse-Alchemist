@@ -64,6 +64,12 @@ if (-not (Test-Path -LiteralPath $configPath)) {
     }
 }
 
+# Local ticket file: the minimal config reads tickets from it (jira.provider = "local")
+$ticketsPath = Join-Path $Target '.alchemist/tickets.json'
+if (-not (Test-Path -LiteralPath $ticketsPath)) {
+    $actions.Add('create .alchemist/tickets.json (example tickets, to replace with yours)')
+    if (-not $DryRun) { Copy-Item (Join-Path $source 'dataverse-alchemist/config/tickets.example.json') $ticketsPath }
+}
 # Project .gitignore
 $ignore = @('.alchemist/runs/', '.alchemist/*.local.json', '.alchemist/playwright/', '.claude/dataverse-alchemist/playwright/node_modules/')
 $gitignore = Join-Path $Target '.gitignore'

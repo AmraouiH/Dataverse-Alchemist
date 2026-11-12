@@ -120,7 +120,7 @@ if (-not $SkipNetwork) {
                 catch { Add-Result 'WARN' "Default solution '$solution'" $_.Exception.Message }
             }
         }
-        catch { Add-Result 'KO' "Dataverse '$name'" $_.Exception.Message }
+        catch { Add-Result 'KO' "Dataverse '$name'" "$($_.Exception.Message) -> check dataverse.environments.$name.url and auth (azcli: run 'az login')" }
     }
 
     if ((Get-AlchemistSetting $config 'devops.provider') -eq 'azureDevOps') {

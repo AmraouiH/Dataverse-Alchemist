@@ -99,7 +99,9 @@ The minimal config is four sections:
 }
 ```
 
-**3. Check and go**
+The installer also creates `.alchemist/tickets.json` with example tickets, so you can try the agent without Jira.
+
+**3. Open Claude Code at the project root, check and go**
 
 ```
 /alchemist-check

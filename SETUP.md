@@ -85,6 +85,14 @@ Everything else is set section by section. Each guide stands on its own:
 It checks the config, secrets, tools, git repository, Dataverse connection, tickets, Playwright and allowed
 capabilities. Everything should be `OK`; a `WARN` points to an optional feature.
 
+## First run in Claude Code
+
+- Open Claude Code **at the root of the CRM project**: the commands and skills are read from `.claude/` there.
+- The agent runs its PowerShell scripts through Claude Code. The first time, Claude Code asks permission for each
+  command; allow the `.claude/dataverse-alchemist/scripts` commands for the project to avoid repeated prompts. Writes to
+  Dataverse still go through the agent's own approval step.
+- The installer created `.alchemist/tickets.json` with example tickets. Replace them with yours, or switch to Jira
+  ([docs/setup/02-tickets.md](docs/setup/02-tickets.md)).
 ## 5. Use
 
 | Command | Purpose |

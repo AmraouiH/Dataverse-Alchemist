@@ -1,6 +1,6 @@
 {
   "name": "dataverse-alchemist",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Claude Code agent that delivers Dynamics 365 / Dataverse tickets end to end: plan, build, test (Playwright), document, report.",
   "keywords": [
     "claude",
