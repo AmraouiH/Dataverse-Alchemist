@@ -51,7 +51,7 @@ foreach ($group in ($all | Group-Object { "$($_.scope) / $($_.category)" } | Sor
     foreach ($item in ($group.Group | Sort-Object count -Descending)) {
         # Confirmed from 3 signals: apply by default. Below that: just a hint.
         $level = if ($item.count -ge 3) { 'confirmed' } else { 'observed' }
-        "- [$($item.id)] $($item.lesson) ($level, $($item.count)x, dernier signal $($item.lastSeen))"
+        "- [$($item.id)] $($item.lesson) ($level, $($item.count)x, last signal $($item.lastSeen))"
     }
     ''
 }
